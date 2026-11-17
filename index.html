@@ -1,0 +1,275 @@
+Yeh lijiye aapka wahi Tulsi Win ka pura complete code. Aap isse copy karke dobara save kar sakte hain:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tulsi Win - Gaming & Prediction Platform</title>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --bg-light: #f3f4f6;
+            --white: #ffffff;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --red: #ef4444;
+            --green: #22c55e;
+            --violet: #a855f7;
+            --gold: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #e5e7eb; display: flex; justify-content: center; min-height: 100vh; }
+        
+        /* Mobile App Wrapper */
+        .app-shell { width: 100%; max-width: 450px; background: var(--bg-light); min-height: 100vh; position: relative; padding-bottom: 75px; box-shadow: 0 0 20px rgba(0,0,0,0.15); overflow-x: hidden; }
+        
+        /* Top Header */
+        .top-bar { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+        .brand-logo { font-size: 1.45rem; font-weight: 900; letter-spacing: 0.5px; font-style: italic; display: flex; align-items: center; gap: 6px; }
+        .top-actions { display: flex; gap: 10px; align-items: center; }
+        .badge-bal { background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
+
+        /* Page Container */
+        .page { display: none; animation: fadeIn 0.2s ease-in-out; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0.4; } to { opacity: 1; } }
+
+        /* Banner & Notice */
+        .banner-card { margin: 12px; border-radius: 12px; background: linear-gradient(120deg, #065f46, #10b981, #f59e0b); color: white; padding: 18px; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(16,185,129,0.25); }
+        .banner-card h2 { font-size: 1.4rem; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .banner-card p { font-size: 0.8rem; margin-top: 4px; opacity: 0.95; }
+        .banner-btn { display: inline-block; background: #fff; color: #059669; font-weight: 800; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; margin-top: 10px; cursor: pointer; }
+
+        .notice-bar { background: var(--white); margin: 0 12px 12px; padding: 8px 12px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--text-dark); box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
+        .notice-btn { background: var(--primary); color: white; border: none; padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }
+
+        /* Quick Cards */
+        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 12px 14px; }
+        .quick-box { background: var(--white); padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); cursor: pointer; }
+        .quick-box h4 { font-size: 0.9rem; color: var(--text-dark); }
+        .quick-tag { background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 5px; }
+
+        /* Category Pills */
+        .cat-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 12px 10px; scrollbar-width: none; }
+        .cat-tabs::-webkit-scrollbar { display: none; }
+        .cat-pill { background: var(--white); padding: 7px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .cat-pill.active { background: var(--primary); color: white; }
+
+        /* Section Titles & Game Cards */
+        .sec-head { padding: 8px 14px; font-weight: 700; font-size: 1rem; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; }
+        .game-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 12px 15px; }
+        .game-tile { background: var(--white); border-radius: 12px; overflow: hidden; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.15s; }
+        .game-tile:active { transform: scale(0.96); }
+        .tile-art { height: 85px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.95rem; padding: 6px; }
+        .tile-name { font-size: 0.8rem; font-weight: 600; padding: 6px 4px; color: var(--text-dark); }
+
+        /* Live Winners List */
+        .winner-list { margin: 0 12px 15px; background: var(--white); border-radius: 12px; padding: 10px; }
+        .winner-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid #f3f4f6; font-size: 0.82rem; }
+        .winner-row:last-child { border-bottom: none; }
+        .win-amt { color: var(--primary); font-weight: 700; }
+
+        /* WIN GO GAME SCREEN */
+        .wingo-header { background: var(--primary); color: white; padding: 14px; border-radius: 0 0 20px 20px; }
+        .wallet-panel { background: white; color: var(--text-dark); border-radius: 14px; padding: 14px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .wallet-panel h3 { font-size: 1.5rem; margin: 4px 0 10px; }
+        .wallet-btns { display: flex; gap: 12px; justify-content: center; }
+        .btn-withdraw { background: var(--red); color: white; border: none; padding: 8px 24px; border-radius: 20px; font-weight: 700; cursor: pointer; flex: 1; }
+        .btn-deposit { background: var(--green); color: white; border: none; padding: 8px 24px; border-radius: 20px; font-weight: 700; cursor: pointer; flex: 1; }
+
+        .mode-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px; background: white; padding: 6px; border-radius: 12px; }
+        .mode-item { text-align: center; padding: 8px 4px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); cursor: pointer; }
+        .mode-item.active { background: var(--primary); color: white; }
+
+        .timer-ticket { margin: 0 12px 12px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 14px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .digit-boxes { display: flex; gap: 4px; margin-top: 6px; justify-content: flex-end; }
+        .digit { background: white; color: #059669; font-weight: 900; font-size: 1.2rem; padding: 4px 8px; border-radius: 6px; }
+        .digit.danger { color: var(--red); }
+
+        .bet-board { margin: 0 12px 12px; background: white; border-radius: 14px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
+        .color-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+        .c-btn { border: none; color: white; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+        
+        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; background: #f9fafb; padding: 12px; border-radius: 12px; margin-bottom: 14px; }
+        .num-ball { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white; margin: auto; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.15); border: 2px solid white; }
+        .n-green { background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); }
+        .n-red { background: radial-gradient(circle at 30% 30%, #f87171, #dc2626); }
+        .n-violet-green { background: linear-gradient(135deg, #22c55e 50%, #a855f7 50%); }
+        .n-violet-red { background: linear-gradient(135deg, #ef4444 50%, #a855f7 50%); }
+
+        .mult-row { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; }
+        .mult-chip { padding: 6px 10px; border-radius: 6px; background: #f3f4f6; font-size: 0.78rem; font-weight: 700; cursor: pointer; border: 1px solid #e5e7eb; }
+        .mult-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .big-small-row { display: grid; grid-template-columns: 1fr 1fr; border-radius: 20px; overflow: hidden; }
+        .bs-btn { border: none; padding: 11px; color: white; font-weight: 800; font-size: 0.95rem; cursor: pointer; }
+        .btn-big { background: #f59e0b; }
+        .btn-small { background: #3b82f6; }
+
+        /* History Table */
+        .hist-card { margin: 0 12px 16px; background: white; border-radius: 12px; overflow: hidden; }
+        .hist-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: center; }
+        .hist-table th { background: var(--primary); color: white; padding: 10px 6px; }
+        .hist-table td { padding: 10px 6px; border-bottom: 1px solid #f3f4f6; }
+        .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin: 0 2px; }
+
+        /* Invite Wheel & Activity */
+        .wheel-box { background: linear-gradient(180deg, #ef4444, #b91c1c); color: white; margin: 12px; border-radius: 16px; padding: 20px; text-align: center; }
+        .wheel-circle { width: 190px; height: 190px; border-radius: 50%; border: 8px solid #fbbf24; margin: 15px auto; background: conic-gradient(#fef08a 0deg 60deg, #fde047 60deg 120deg, #fef08a 120deg 180deg, #fde047 180deg 240deg, #fef08a 240deg 300deg, #fde047 300deg 360deg); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+        .spin-center { width: 56px; height: 56px; border-radius: 50%; background: #dc2626; color: white; border: 3px solid #fbbf24; font-weight: 900; cursor: pointer; z-index: 2; }
+
+        /* Agency / Promotion */
+        .agency-hero { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px 16px 40px; text-align: center; }
+        .agency-card { background: white; margin: -25px 12px 12px; border-radius: 12px; padding: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; text-align: center; gap: 10px; }
+        .sub-stat h4 { font-size: 1.1rem; color: var(--text-dark); margin-top: 6px; }
+        .sub-stat p { font-size: 0.72rem; color: var(--text-muted); }
+        .menu-item { background: white; margin: 0 12px 8px; padding: 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 600; color: var(--text-dark); cursor: pointer; }
+
+        /* Account Screen */
+        .profile-top { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px 16px 45px; display: flex; align-items: center; gap: 14px; }
+        .avatar { width: 58px; height: 58px; border-radius: 50%; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.4rem; }
+        .acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px; }
+        .acc-box { background: white; padding: 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: var(--text-dark); box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .acc-box span { display: block; font-size: 0.72rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; background: white; display: grid; grid-template-columns: repeat(5, 1fr); padding: 6px 0 8px; border-top: 1px solid #e5e7eb; z-index: 100; }
+        .nav-item { text-align: center; font-size: 0.7rem; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        .nav-item.active { color: var(--primary); font-weight: 700; }
+        .nav-icon { font-size: 1.25rem; margin-bottom: 2px; }
+        .center-wheel-btn { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem; margin-top: -22px; border: 4px solid white; box-shadow: 0 3px 10px rgba(16,185,129,0.4); }
+
+        /* Bet Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: flex-end; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal-sheet { background: white; width: 100%; max-width: 450px; border-radius: 20px 20px 0 0; overflow: hidden; animation: slideUp 0.2s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-head { padding: 14px; color: white; text-align: center; font-weight: 800; font-size: 1.05rem; }
+        .modal-body { padding: 16px; }
+        .amt-chips { display: flex; gap: 8px; margin: 8px 0 14px; }
+        .amt-chip { flex: 1; text-align: center; padding: 8px; background: #f3f4f6; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+        .amt-chip.active { background: var(--primary); color: white; }
+        .modal-foot { display: grid; grid-template-columns: 1fr 2fr; }
+        .modal-foot button { border: none; padding: 14px; font-weight: 700; font-size: 0.95rem; cursor: pointer; }
+
+        /* Toast */
+        .toast { position: fixed; top: 65px; left: 50%; transform: translateX(-50%); background: rgba(17,24,39,0.9); color: white; padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; z-index: 300; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <!-- TOP HEADER -->
+    <div class="top-bar">
+        <div class="brand-logo">🌿 Tulsi Win</div>
+        <div class="top-actions">
+            <div class="badge-bal">₹<span id="topBalance">1000.00</span></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- ==================== PAGE 1: HOME LOBBY ==================== -->
+    <div id="page-home" class="page active">
+        <div class="banner-card">
+            <p>MISSION BONUS</p>
+            <h2>MEGA WIN ₹500</h2>
+            <p>Complete daily tasks &amp; win instant rewards on Tulsi Win</p>
+            <span class="banner-btn" onclick="openWinGo()">PLAY WIN GO NOW</span>
+        </div>
+
+        <div class="notice-bar">
+            <span>🔊 Welcome to Tulsi Win! Play Win Go 30s &amp; earn daily bonus.</span>
+            <button class="notice-btn" onclick="showToast('Tulsi Win servers are live!')">Detail</button>
+        </div>
+
+        <div class="quick-grid">
+            <div class="quick-box" onclick="navTo('activity')">
+                <div>
+                    <h4>Wheel of fortune</h4>
+                    <span class="quick-tag">Spin Now</span>
+                </div>
+                <span style="font-size:1.8rem;">🎡</span>
+            </div>
+            <div class="quick-box" onclick="claimWelcome()">
+                <div>
+                    <h4>Welcome Bonus</h4>
+                    <span class="quick-tag">Claim ₹50</span>
+                </div>
+                <span style="font-size:1.8rem;">💎</span>
+            </div>
+        </div>
+
+        <div class="cat-tabs">
+            <div class="cat-pill active" onclick="filterCat(this, 'all')">Lobby</div>
+            <div class="cat-pill" onclick="filterCat(this, 'lottery')">Lottery</div>
+            <div class="cat-pill" onclick="filterCat(this, 'mini')">Mini Game</div>
+            <div class="cat-pill" onclick="filterCat(this, 'slots')">Slots</div>
+            <div class="cat-pill" onclick="filterCat(this, 'casino')">Casino</div>
+        </div>
+
+        <div class="sec-head"><span>🎱 Lottery</span><span style="font-size:0.75rem;color:var(--primary);">All &gt;</span></div>
+        <div class="game-grid">
+            <div class="game-tile" onclick="openWinGo()">
+                <div class="tile-art" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);">WIN GO<br><span style="font-size:0.7rem;">30s / 1Min</span></div>
+                <div class="tile-name">Win Go</div>
+            </div>
+            <div class="game-tile" onclick="openWinGo()">
+                <div class="tile-art" style="background:linear-gradient(135deg,#ec4899,#f43f5e);">K3 LOTRE<br><span style="font-size:0.7rem;">Dice Game</span></div>
+                <div class="tile-name">K3 Lotre</div>
+            </div>
+            <div class="game-tile" onclick="openWinGo()">
+                <div class="tile-art" style="background:linear-gradient(135deg,#10b981,#059669);">5D LOTRE<br><span style="font-size:0.7rem;">Number Pick</span></div>
+                <div class="tile-name">5D Lotre</div>
+            </div>
+        </div>
+
+        <div class="sec-head"><span>🎮 Mini Games &amp; Slots</span></div>
+        <div class="game-grid">
+            <div class="game-tile" onclick="openWinGo()">
+                <div class="tile-art" style="background:linear-gradient(135deg,#dc2626,#991b1b);">✈️ AVIATOR<br><span style="font-size:0.7rem;">27.2X</span></div>
+                <div class="tile-name">Aviator</div>
+            </div>
+            <div class="game-tile" onclick="openWinGo()">
+                <div class="tile-art" style="background:linear-gradient(135deg,#d97706,#b45309);">🐔 CHICKEN<br><span style="font-size:0.7rem;">Road 2</span></div>
+                <div class="tile-name">Chicken Road 2</div>
+            </div>
+            <div class="game-tile" onclick="openWinGo()">
+                <div class="tile-art" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);">💎 FORTUNE<br><span style="font-size:0.7rem;">Gems 4</span></div>
+                <div class="tile-name">Fortune Gems</div>
+            </div>
+        </div>
+
+        <div class="sec-head"><span>🏅 Winning Information</span></div>
+        <div class="winner-list" id="liveWinners">
+            <div class="winner-row"><span>🎱 WinGo • Mem***IIO</span><span class="win-amt">+₹196.00</span></div>
+            <div class="winner-row"><span>🎱 WinGo • Mem***JVG</span><span class="win-amt">+₹980.00</span></div>
+            <div class="winner-row"><span>🎱 WinGo • Mem***QYI</span><span class="win-amt">+₹392.00</span></div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 2: WIN GO GAME ROOM ==================== -->
+    <div id="page-wingo" class="page">
+        <div class="wingo-header">
+            <div class="wallet-panel">
+                <span style="font-size:0.8rem;color:var(--text-muted);">Tulsi Win Wallet Balance</span>
+                <h3>₹<span id="wingoBalance">1000.00</span></h3>
+                <div class="wallet-btns">
+                    <button class="btn-withdraw" onclick="quickWithdraw()">Withdraw</button>
+                    <button class="btn-deposit" onclick="quickDeposit()">Deposit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mode-bar">
+            <div class="mode-item active" onclick="setGameMode(30, this)">⏱️<br>Win Go 30s</div>
+            <div class="mode-item" onclick="setGameMode(60, this)">⏱️<br>Win Go 1Min</div>
+            <div class="mode-item" onclick="setGameMode(180, this)">⏱️<br>Win Go 3Min</div>
+            <div class="mode-item" onclick="setGameMode(300, this)">⏱️<br>Win Go 5Min</div>
+        </div>
+
+        <div class="timer-ticket">
+            <div>
+                <span style
